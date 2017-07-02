@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/add_item"
-        android:title="@string/save_inventory_item"
+        android:title="@string/add_inventory_item"
         android:icon="@drawable/add"
         app:showAsAction="always" />
 

@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">Inventory App</string>
 
+    <string name="add_inventory_item">Add item</string>
     <string name="save_inventory_item">Save item</string>
     <string name="delete_all">Delete all inventory items</string>
+    <string name="delete_item">Delete inventory item</string>
+    <string name="add_an_item">Add an item</string>
+    <string name="edit_an_item">Edit an item</string>
 
     <string name="sale_button">Sale</string>
+    <string name="no_quantity">No stock left!</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.example.android.inventoryapp;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.LoaderManager;
@@ -11,9 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
@@ -36,6 +38,17 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         // Attach cursor adapter to the ListView
         gridViewItems.setAdapter(mInventoryAdapter);
 
+        // Start item onclick listener
+        gridViewItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Intent addEditIntent = new Intent(InventoryActivity.this, AddEditActivity.class);
+                Uri currentItemUri = ContentUris.withAppendedId(InventoryEntry.CONTENT_URI, id);
+                addEditIntent.setData(currentItemUri);
+                startActivity(addEditIntent);
+            }
+        });
+
         getSupportLoaderManager().initLoader(INVENTORY_LOADER, null, this);
 
     }
@@ -57,18 +70,6 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
     }
 
-    private void reduceItemQuantity(){
-        TextView itemQuantityTextView = (TextView) findViewById(R.id.item_quantity);
-        String currentquantity = itemQuantityTextView.getText().toString();
-        int quantity = Integer.parseInt(currentquantity);
-        if (quantity > 0){
-            quantity--;
-            ContentValues values = new ContentValues();
-            values.put(InventoryEntry.COLUMN_QUANTITY, quantity);
-            Uri newQuantityUri = getContentResolver().insert(InventoryEntry.CONTENT_URI,values);
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_catalog.xml file.
@@ -83,7 +84,9 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         switch (item.getItemId()) {
             // Respond to a click on the "Add" menu option
             case R.id.add_item:
-                insertInventoryItem();
+//                insertInventoryItem();
+                Intent addItemIntent = new Intent(InventoryActivity.this, AddEditActivity.class);
+                startActivity(addItemIntent);
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.delete_all_items:
