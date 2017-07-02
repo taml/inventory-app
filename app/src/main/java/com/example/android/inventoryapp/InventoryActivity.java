@@ -1,6 +1,8 @@
 package com.example.android.inventoryapp;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -9,7 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
@@ -18,6 +22,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
 
     private static final int INVENTORY_LOADER = 0;
     InventoryCursorAdapter mInventoryAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,36 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         gridViewItems.setAdapter(mInventoryAdapter);
 
         getSupportLoaderManager().initLoader(INVENTORY_LOADER, null, this);
+
+    }
+
+    private void insertInventoryItem(){
+        // Create a ContentValues object where column names are the keys,
+        // and calligraphy nib attributes are the item values.
+        ContentValues values = new ContentValues();
+        values.put(InventoryEntry.COLUMN_NAME, "Calligraphy Nib");
+        values.put(InventoryEntry.COLUMN_PRICE, 0.89);
+        values.put(InventoryEntry.COLUMN_QUANTITY, 5);
+        values.put(InventoryEntry.COLUMN_SUPPLIER_NAME, InventoryEntry.SUPPLIER_SCRIBBLERS);
+        values.put(InventoryEntry.COLUMN_SUPPLIER_EMAIL, "scribblers@example.com");
+
+        // Insert a new row for calligraphy nibs into the provider using the ContentResolver.
+        // Use the {@link InventoryEntry#CONTENT_URI} to indicate that we want to insert
+        // into the inventory database table.
+        // Receive the new content URI that will allow us to access the calligraphy nibs data in the future.
+        Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
+    }
+
+    private void reduceItemQuantity(){
+        TextView itemQuantityTextView = (TextView) findViewById(R.id.item_quantity);
+        String currentquantity = itemQuantityTextView.getText().toString();
+        int quantity = Integer.parseInt(currentquantity);
+        if (quantity > 0){
+            quantity--;
+            ContentValues values = new ContentValues();
+            values.put(InventoryEntry.COLUMN_QUANTITY, quantity);
+            Uri newQuantityUri = getContentResolver().insert(InventoryEntry.CONTENT_URI,values);
+        }
     }
 
     @Override
@@ -48,6 +83,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         switch (item.getItemId()) {
             // Respond to a click on the "Add" menu option
             case R.id.add_item:
+                insertInventoryItem();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.delete_all_items:

@@ -1,11 +1,14 @@
 package com.example.android.inventoryapp;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.text.TextUtils;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
@@ -47,7 +50,8 @@ public class InventoryCursorAdapter extends CursorAdapter{
      *                correct row.
      */
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, Cursor cursor) {
+        Button saleButton  = (Button) view.findViewById(R.id.item_sale_button);
         TextView nameTextView = (TextView) view.findViewById(R.id.item_name);
         TextView priceTextView = (TextView) view.findViewById(R.id.item_price);
         TextView quantityTextView = (TextView) view.findViewById(R.id.item_quantity);
@@ -63,5 +67,21 @@ public class InventoryCursorAdapter extends CursorAdapter{
         nameTextView.setText(name);
         priceTextView.setText(price);
         quantityTextView.setText(quantity);
+
+        final int inventoryItemId = cursor.getInt(cursor.getColumnIndexOrThrow(InventoryEntry._ID));
+        final int inventoryItemQuantity = cursor.getInt(cursor.getColumnIndex(InventoryEntry.COLUMN_QUANTITY));
+
+        saleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (inventoryItemQuantity > 0) {
+                   int quantity = inventoryItemQuantity - 1;
+                    ContentValues values = new ContentValues();
+                    values.put(InventoryEntry.COLUMN_QUANTITY, quantity);
+                    Uri newUri = ContentUris.withAppendedId(InventoryEntry.CONTENT_URI, inventoryItemId);
+                    context.getContentResolver().update(newUri, values, null, null);
+                }
+            }
+        });
     }
 }
