@@ -1,9 +1,242 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.android.inventoryapp.AddEditActivity">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/item_image"
+            android:layout_marginTop="@dimen/medium"
+            android:layout_marginLeft="@dimen/small"
+            android:layout_marginRight="@dimen/small"
+            android:layout_marginBottom="@dimen/small"
+            android:padding="@dimen/medium"
+            android:background="@color/imageBackground"
+            android:src="@drawable/pic"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/add_item_picture_button"
+            android:layout_marginTop="@dimen/medium"
+            android:layout_marginLeft="@dimen/small"
+            android:layout_marginRight="@dimen/small"
+            android:layout_marginBottom="@dimen/small"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:text="@string/item_picture"
+            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_marginTop="@dimen/small"
+        android:layout_marginBottom="@dimen/small"
+        android:background="@color/colorAccent"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/divider"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/TextStyle"
+            android:layout_marginTop="@dimen/small"
+            android:layout_marginLeft="@dimen/small"
+            android:layout_marginRight="@dimen/small"
+            android:layout_marginBottom="@dimen/xsmall"
+            android:text="@string/item_name"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/item_name_text"
+            android:layout_marginTop="@dimen/small"
+            android:layout_marginLeft="@dimen/small"
+            android:layout_marginRight="@dimen/small"
+            android:layout_marginBottom="@dimen/xsmall"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content">
+        </EditText>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/TextStyle"
+            android:layout_marginTop="@dimen/xsmall"
+            android:layout_marginLeft="@dimen/small"
+            android:layout_marginRight="@dimen/small"
+            android:layout_marginBottom="@dimen/xsmall"
+            android:text="@string/item_price"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/item_price_text"
+            android:layout_marginTop="@dimen/xsmall"
+            android:layout_marginLeft="@dimen/small"
+            android:layout_marginRight="@dimen/small"
+            android:layout_marginBottom="@dimen/xsmall"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content">
+        </EditText>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/TextStyle"
+            android:layout_margin="@dimen/small"
+            android:text="@string/quantity"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_height="wrap_content" />
+        <SeekBar
+            android:id="@+id/quantity_seekbar"
+            android:layout_marginTop="@dimen/small"
+            android:layout_marginLeft="@dimen/xsmall"
+            android:layout_marginRight="@dimen/xsmall"
+            android:layout_marginBottom="@dimen/xsmall"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content">
+        </SeekBar>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/total_quantity"
+            style="@style/TextStyle"
+            android:layout_marginTop="@dimen/xsmall"
+            android:layout_marginRight="@dimen/medium"
+            android:layout_marginBottom="@dimen/small"
+            android:layout_marginLeft="@dimen/small"
+            android:text="@string/total_quantity"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+<View
+    android:layout_marginTop="@dimen/small"
+    android:layout_marginBottom="@dimen/small"
+    android:background="@color/colorAccent"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/divider"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/TextStyle"
+            android:layout_marginTop="@dimen/small"
+            android:layout_marginLeft="@dimen/small"
+            android:layout_marginRight="@dimen/small"
+            android:layout_marginBottom="@dimen/xsmall"
+            android:text="@string/supplier"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_height="wrap_content" />
+    <Spinner
+        android:id="@+id/supplier_spinner"
+        android:layout_marginTop="@dimen/small"
+        android:layout_marginLeft="@dimen/small"
+        android:layout_marginRight="@dimen/small"
+        android:layout_marginBottom="@dimen/xsmall"
+        android:spinnerMode="dropdown"
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content">
+    </Spinner>
+
+</LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/TextStyle"
+            android:layout_marginTop="@dimen/small"
+            android:layout_marginLeft="@dimen/small"
+            android:layout_marginRight="@dimen/small"
+            android:layout_marginBottom="@dimen/xsmall"
+            android:text="@string/supplier_email"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/supplier_email_text"
+            android:layout_marginTop="@dimen/small"
+            android:layout_marginLeft="@dimen/small"
+            android:layout_marginRight="@dimen/small"
+            android:layout_marginBottom="@dimen/xsmall"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content">
+        </EditText>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/order_more_button"
+            android:text="@string/order_more"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:layout_margin="@dimen/medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>
+</ScrollView>

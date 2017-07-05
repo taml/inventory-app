@@ -45,13 +45,14 @@ public class InventoryContract {
         public static final int SUPPLIER_SCRIBBLERS = 1;
         public static final int SUPPLIER_CULT_PENS = 2;
         public static final int SUPPLIER_JET_PENS = 3;
+        public static final int SUPPLIER_UNKNOWN = 4;
 
         /**
          * Returns whether or not the given supplier is {@link #SUPPLIER_QUILL_LONDON}, {@link #SUPPLIER_SCRIBBLERS},
-         * {@link #SUPPLIER_CULT_PENS}, or {@link #SUPPLIER_JET_PENS}.
+         * {@link #SUPPLIER_CULT_PENS}, {@link #SUPPLIER_JET_PENS}, or {@link #SUPPLIER_UNKNOWN}.
          */
         public static boolean isValidSupplier(int supplier) {
-            if (supplier == SUPPLIER_QUILL_LONDON || supplier == SUPPLIER_SCRIBBLERS || supplier == SUPPLIER_CULT_PENS || supplier == SUPPLIER_JET_PENS) {
+            if (supplier == SUPPLIER_QUILL_LONDON || supplier == SUPPLIER_SCRIBBLERS || supplier == SUPPLIER_CULT_PENS || supplier == SUPPLIER_JET_PENS || supplier == SUPPLIER_UNKNOWN) {
                 return true;
             }
             return false;

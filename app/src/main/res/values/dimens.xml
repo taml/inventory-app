@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="category_font_size">16sp</dimen>
+    <dimen name="divider">2dp</dimen>
+    <dimen name="xsmall">8dp</dimen>
+    <dimen name="small">16dp</dimen>
+    <dimen name="medium">32dp</dimen>
+
+</resources>

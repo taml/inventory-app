@@ -8,15 +8,37 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
 public class AddEditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int INVENTORY_LOADER = 0;
+    private ImageView mItemImageView;
+    private Button mItemPicButton;
+    private EditText mItemNameEditEditText;
+    private EditText mItemPriceEditText;
+    private SeekBar mItemQuantitySeekBar;
+    private TextView mTotalQuantityTextView;
+    private Spinner mItemSupplierNameSpinner;
+    private EditText mItemSupplierEmailEditText;
+    private Button mOrderMoreButton;
+
+    private int mSupplier = 4;
 
     /** Content URI for the existing inventory item (null if it's a new item) */
     private Uri mCurrentInventoryItemUri;
@@ -28,6 +50,16 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit);
 
+        mItemImageView = (ImageView) findViewById(R.id.item_image);
+        mItemPicButton = (Button) findViewById(R.id.add_item_picture_button);
+        mItemNameEditEditText = (EditText) findViewById(R.id.item_name_text);
+        mItemPriceEditText = (EditText) findViewById(R.id.item_price_text);
+        mItemQuantitySeekBar = (SeekBar) findViewById(R.id.quantity_seekbar);
+        mTotalQuantityTextView = (TextView) findViewById(R.id.total_quantity);
+        mItemSupplierNameSpinner = (Spinner) findViewById(R.id.supplier_spinner);
+        mItemSupplierEmailEditText = (EditText) findViewById(R.id.supplier_email_text);
+        mOrderMoreButton = (Button) findViewById(R.id.order_more_button);
+
         Intent inventoryIntent = getIntent();
         mCurrentInventoryItemUri = inventoryIntent.getData();
 
@@ -38,6 +70,52 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
             setTitle(getString(R.string.edit_an_item));
             Log.v("AddEditActivity", "ID: " + mCurrentInventoryItemUri );
         }
+
+        setupSpinner();
+        getSupportLoaderManager().initLoader(INVENTORY_LOADER, null, this);
+    }
+
+    /**
+     * Setup the dropdown spinner that allows the user to select the inventory supplier.
+     */
+    private void setupSpinner() {
+        // Create adapter for spinner. The list options are from the String array it will use
+        // the spinner will use the default layout
+        ArrayAdapter supplierSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.array_supplier_options, android.R.layout.simple_spinner_item);
+
+        // Specify dropdown layout style - simple list view with 1 item per line
+        supplierSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+
+        // Apply the adapter to the spinner
+        mItemSupplierNameSpinner.setAdapter(supplierSpinnerAdapter);
+
+        // Set the integer mSelected to the constant values
+        mItemSupplierNameSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selection = (String) parent.getItemAtPosition(position);
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.supplier_one))) {
+                        mSupplier = InventoryEntry.SUPPLIER_QUILL_LONDON; // Supplier Quill London
+                    } else if (selection.equals(getString(R.string.supplier_two))) {
+                        mSupplier = InventoryEntry.SUPPLIER_SCRIBBLERS; // Supplier Scribblers
+                    } else if (selection.equals(getString(R.string.supplier_three))) {
+                        mSupplier = InventoryEntry.SUPPLIER_CULT_PENS; // Supplier Cult Pens
+                    } else if (selection.equals(getString(R.string.supplier_four))) {
+                        mSupplier = InventoryEntry.SUPPLIER_JET_PENS; // Supplier Jet Pens
+                    } else {
+                        mSupplier = InventoryEntry.SUPPLIER_UNKNOWN; // Supplier Unknown
+                    }
+                }
+            }
+
+            // Because AdapterView is an abstract class, onNothingSelected must be defined
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mSupplier = InventoryEntry.SUPPLIER_UNKNOWN; // Supplier Unknown
+            }
+        });
     }
 
     @Override
@@ -69,6 +147,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.delete_inventory_item:
+                deleteInventoryItem();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -99,12 +178,82 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        if (cursor == null || cursor.getCount() < 1) {
+            return;
+        }
+
+        if (cursor.moveToFirst()) {
+            // Find the columns of inventory item attributes that we're interested in
+            int nameColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_NAME);
+            int priceColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_PRICE);
+            int quantityColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_QUANTITY);
+            int supplierNameColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_SUPPLIER_NAME);
+            int supplierEmailColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_SUPPLIER_EMAIL);
+
+            // Extract out the value from the Cursor for the given column index
+            String name = cursor.getString(nameColumnIndex);
+            float price = cursor.getFloat(priceColumnIndex);
+            int quantity = cursor.getInt(quantityColumnIndex);
+            int supplierName = cursor.getInt(supplierNameColumnIndex);
+            String supplierEmail = cursor.getString(supplierEmailColumnIndex);
+
+            // Update the views on the screen with the values from the database
+            mItemNameEditEditText.setText(name);
+            mItemPriceEditText.setText(Float.toString(price));
+            mTotalQuantityTextView.setText(Integer.toString(quantity));
+            mItemSupplierEmailEditText.setText(supplierEmail);
+            switch (supplierName) {
+                case InventoryEntry.SUPPLIER_QUILL_LONDON:
+                    mItemSupplierNameSpinner.setSelection(0);
+                    break;
+                case InventoryEntry.SUPPLIER_SCRIBBLERS:
+                    mItemSupplierNameSpinner.setSelection(1);
+                    break;
+                case InventoryEntry.SUPPLIER_CULT_PENS:
+                    mItemSupplierNameSpinner.setSelection(2);
+                    break;
+                case InventoryEntry.SUPPLIER_JET_PENS:
+                    mItemSupplierNameSpinner.setSelection(3);
+                    break;
+                default:
+                    mItemSupplierNameSpinner.setSelection(4);
+                    break;
+            }
+        }
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        mItemNameEditEditText.setText("");
+        mItemPriceEditText.setText("");
+        mTotalQuantityTextView.setText("");
+        mItemSupplierEmailEditText.setText("");
+        mItemSupplierNameSpinner.setSelection(4);
+    }
 
+    /**
+     * Perform the deletion of an inventory item in the database.
+     */
+    private void deleteInventoryItem() {
+        // Only perform the delete if this is an existing item.
+        if (mCurrentInventoryItemUri != null) {
+            // Call the ContentResolver to delete the inventory item at the given content URI.
+            // Pass in null for the selection and selection args because the mCurrentInventoryItemUri
+            // content URI already identifies the inventory item that we want.
+            int rowsDeleted = getContentResolver().delete(mCurrentInventoryItemUri, null, null);
+            // Show a toast message depending on whether or not the delete was successful.
+            if (rowsDeleted == 0) {
+                // If no rows were deleted, then there was an error with the delete.
+                Toast.makeText(this, getString(R.string.delete_item_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.delete_item_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+        finish();
     }
 }
