@@ -1,5 +1,6 @@
 package com.example.android.inventoryapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -39,6 +40,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     private Button mOrderMoreButton;
 
     private int mSupplier = 4;
+    private int mQuantity = 0;
 
     /** Content URI for the existing inventory item (null if it's a new item) */
     private Uri mCurrentInventoryItemUri;
@@ -73,6 +75,24 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
         setupSpinner();
         getSupportLoaderManager().initLoader(INVENTORY_LOADER, null, this);
+
+        mItemQuantitySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mQuantity = progress;
+                mTotalQuantityTextView.setText("Total Quantity: " + mQuantity + " / 100.");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Toast.makeText(AddEditActivity.this, "Slide the quantity selector up or down to select quantity", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     /**
@@ -118,6 +138,60 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
         });
     }
 
+    private void saveInventoryItem() {
+
+        String itemName = mItemNameEditEditText.getText().toString().trim();
+        String itemPrice = mItemPriceEditText.getText().toString().trim();
+        String itemSupplierEmail = mItemSupplierEmailEditText.getText().toString().trim();
+
+        if (mCurrentInventoryItemUri == null &&
+                TextUtils.isEmpty(itemName) && TextUtils.isEmpty(itemPrice) &&
+                TextUtils.isEmpty(itemSupplierEmail)
+                && mSupplier == InventoryEntry.SUPPLIER_UNKNOWN) {
+            return;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(InventoryEntry.COLUMN_NAME, itemName);
+        // If the price is not provided by the user, don't try to parse the string into an
+        // integer value. Use 0.00 by default.
+        double price = 0.00;
+        if (!TextUtils.isEmpty(itemPrice)) {
+            price = Double.parseDouble(itemPrice);
+        }
+        values.put(InventoryEntry.COLUMN_PRICE, price);
+        values.put(InventoryEntry.COLUMN_QUANTITY, mQuantity);
+        values.put(InventoryEntry.COLUMN_SUPPLIER_NAME, mSupplier);
+        values.put(InventoryEntry.COLUMN_SUPPLIER_EMAIL, itemSupplierEmail);
+
+        if (mCurrentInventoryItemUri == null) {
+            // Insert a new inventory item into the provider, returning the content URI for the new item.
+            Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
+            // Show a toast message depending on whether or not the insertion was successful
+            if (newUri == null) {
+                // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, getString(R.string.error_saving),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the insertion was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.success_saving),
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            int rowsAffected = getContentResolver().update(mCurrentInventoryItemUri, values, null, null);
+            // Show a toast message depending on whether or not the update was successful.
+            if (rowsAffected == 0) {
+                // If no rows were affected, then there was an error with the update.
+                Toast.makeText(this, getString(R.string.error_updating),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the update was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.success_updating),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
@@ -143,6 +217,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.save_item:
+                saveInventoryItem();
                 finish();
                 return true;
             // Respond to a click on the "Delete" menu option
@@ -193,15 +268,16 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
-            float price = cursor.getFloat(priceColumnIndex);
+            double price = cursor.getDouble(priceColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
             int supplierName = cursor.getInt(supplierNameColumnIndex);
             String supplierEmail = cursor.getString(supplierEmailColumnIndex);
 
             // Update the views on the screen with the values from the database
             mItemNameEditEditText.setText(name);
-            mItemPriceEditText.setText(Float.toString(price));
-            mTotalQuantityTextView.setText(Integer.toString(quantity));
+            mItemPriceEditText.setText(Double.toString(price));
+            mItemQuantitySeekBar.setProgress(quantity);
+            mTotalQuantityTextView.setText("Total Quantity: " + quantity + " / 100");
             mItemSupplierEmailEditText.setText(supplierEmail);
             switch (supplierName) {
                 case InventoryEntry.SUPPLIER_QUILL_LONDON:
@@ -228,7 +304,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     public void onLoaderReset(Loader<Cursor> loader) {
         mItemNameEditEditText.setText("");
         mItemPriceEditText.setText("");
-        mTotalQuantityTextView.setText("");
+        mTotalQuantityTextView.setText("Total Quantity: " + mQuantity + " / 100");
         mItemSupplierEmailEditText.setText("");
         mItemSupplierNameSpinner.setSelection(4);
     }

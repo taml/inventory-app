@@ -143,7 +143,7 @@ public class InventoryProvider extends ContentProvider {
         }
 
         // If the price is provided, check that it's greater than or equal to 0.00
-        Float price = values.getAsFloat(InventoryEntry.COLUMN_PRICE);
+        Double price = values.getAsDouble(InventoryEntry.COLUMN_PRICE);
         if (price != null && price < 0.00) {
             throw new IllegalArgumentException("Inventory item requires valid price");
         }
@@ -254,7 +254,7 @@ public class InventoryProvider extends ContentProvider {
         // check that the quantity value is valid.
         if (values.containsKey(InventoryEntry.COLUMN_PRICE)) {
             // Check that the quantity is greater than or equal to 0
-            Float price = values.getAsFloat(InventoryEntry.COLUMN_PRICE);
+            Double price = values.getAsDouble(InventoryEntry.COLUMN_PRICE);
             if (price != null && price < 0.00) {
                 throw new IllegalArgumentException("Item requires a valid price");
             }
