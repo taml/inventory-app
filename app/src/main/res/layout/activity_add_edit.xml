@@ -21,12 +21,9 @@
             android:layout_marginLeft="@dimen/small"
             android:layout_marginRight="@dimen/small"
             android:layout_marginBottom="@dimen/small"
-            android:padding="@dimen/medium"
             android:background="@color/imageBackground"
-            android:src="@drawable/pic"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content" />
+            android:layout_width="@dimen/image"
+            android:layout_height="@dimen/image" />
 
         <Button
             android:id="@+id/add_item_picture_button"

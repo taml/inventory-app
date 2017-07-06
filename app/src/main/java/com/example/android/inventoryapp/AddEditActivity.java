@@ -1,10 +1,14 @@
 package com.example.android.inventoryapp;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
@@ -30,9 +34,16 @@ import android.widget.Toast;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class AddEditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int INVENTORY_LOADER = 0;
+    private static final int IMG_REQUEST = 88;
+    private static final String LOG_TAG = "AddEditActivity";
+
     private ImageView mItemImageView;
     private Button mItemPicButton;
     private EditText mItemNameEditEditText;
@@ -49,6 +60,8 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
     /** Content URI for the existing inventory item (null if it's a new item) */
     private Uri mCurrentInventoryItemUri;
+    private Uri mImageUri;
+    private String mImageUriString = "";
 
     private boolean mInventoryItemHasChanged = false;
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -113,12 +126,103 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
         mItemSupplierNameSpinner.setOnTouchListener(mTouchListener);
         mItemSupplierEmailEditText.setOnTouchListener(mTouchListener);
 
+        mItemPicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getImage();
+            }
+        });
+
         mOrderMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 orderMore();
             }
         });
+    }
+
+    public void getImage() {
+        Intent intent;
+
+        if (Build.VERSION.SDK_INT < 19) {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMG_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        // The ACTION_OPEN_DOCUMENT intent was sent with the request code READ_REQUEST_CODE.
+        // If the request code seen here doesn't match, it's the response to some other intent,
+        // and the below code shouldn't run at all.
+
+        if (requestCode == IMG_REQUEST && resultCode == Activity.RESULT_OK) {
+            // The document selected by the user won't be returned in the intent.
+            // Instead, a URI to that document will be contained in the return intent
+            // provided to this method as a parameter.  Pull that uri using "resultData.getData()"
+
+            if (resultData != null) {
+                mImageUri = resultData.getData();
+                mItemImageView.setImageBitmap(getBitmapFromUri(mImageUri));
+                mImageUriString = mImageUri.toString();
+                Log.v(LOG_TAG, "Uri: " + mImageUriString);
+            }
+        }
+    }
+
+    public Bitmap getBitmapFromUri(Uri uri) {
+
+        if (uri == null || uri.toString().isEmpty())
+            return null;
+
+        // Get the dimensions of the View
+        int targetW = mItemImageView.getWidth();
+        int targetH = mItemImageView.getHeight();
+
+        InputStream input = null;
+        try {
+            input = this.getContentResolver().openInputStream(uri);
+
+            // Get the dimensions of the bitmap
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(input, null, bmOptions);
+            input.close();
+
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+
+            // Determine how much to scale down the image
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+
+            // Decode the image file into a Bitmap sized to fill the View
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inPurgeable = true;
+
+            input = this.getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(input, null, bmOptions);
+            input.close();
+            return bitmap;
+
+        } catch (FileNotFoundException fne) {
+            Log.e(LOG_TAG, "Failed to load image.", fne);
+            return null;
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Failed to load image.", e);
+            return null;
+        } finally {
+            try {
+                input.close();
+            } catch (IOException ioe) {
+
+            }
+        }
     }
 
     /**
@@ -208,6 +312,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
         }
 
         ContentValues values = new ContentValues();
+        values.put(InventoryEntry.COLUMN_IMAGE, mImageUriString);
         values.put(InventoryEntry.COLUMN_NAME, itemName);
         // If the price is not provided by the user, don't try to parse the string use 00.00 by default.
         if (TextUtils.isEmpty(itemPrice)) {
@@ -342,6 +447,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
         // all columns from the inventory table
         String[] projection = {
                 InventoryEntry._ID,
+                InventoryEntry.COLUMN_IMAGE,
                 InventoryEntry.COLUMN_NAME,
                 InventoryEntry.COLUMN_PRICE,
                 InventoryEntry.COLUMN_QUANTITY,
@@ -365,6 +471,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
         if (cursor.moveToFirst()) {
             // Find the columns of inventory item attributes that we're interested in
+            int imageColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_IMAGE);
             int nameColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_NAME);
             int priceColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_PRICE);
             int quantityColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_QUANTITY);
@@ -372,11 +479,18 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
             int supplierEmailColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_SUPPLIER_EMAIL);
 
             // Extract out the value from the Cursor for the given column index
+            String image = cursor.getString(imageColumnIndex);
             String name = cursor.getString(nameColumnIndex);
             double price = cursor.getDouble(priceColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
             int supplierName = cursor.getInt(supplierNameColumnIndex);
             String supplierEmail = cursor.getString(supplierEmailColumnIndex);
+            if (image != null) {
+                Uri imgUri = Uri.parse(image);
+                mItemImageView.setImageBitmap(getBitmapFromUri(imgUri));
+            }
+            Log.v(LOG_TAG, image);
+
 
             // Update the views on the screen with the values from the database
             mItemNameEditEditText.setText(name);
