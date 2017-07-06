@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
-public class InventoryCursorAdapter extends CursorAdapter{
+public class InventoryCursorAdapter extends CursorAdapter {
 
     /**
      * Constructs a new {@link InventoryCursorAdapter}.
@@ -53,7 +53,7 @@ public class InventoryCursorAdapter extends CursorAdapter{
      */
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
-        final Button saleButton  = (Button) view.findViewById(R.id.item_sale_button);
+        final Button saleButton = (Button) view.findViewById(R.id.item_sale_button);
         TextView nameTextView = (TextView) view.findViewById(R.id.item_name);
         TextView priceTextView = (TextView) view.findViewById(R.id.item_price);
         TextView quantityTextView = (TextView) view.findViewById(R.id.item_quantity);
@@ -77,13 +77,12 @@ public class InventoryCursorAdapter extends CursorAdapter{
             @Override
             public void onClick(View v) {
                 if (inventoryItemQuantity > 0) {
-                   int quantity = inventoryItemQuantity - 1;
+                    int quantity = inventoryItemQuantity - 1;
                     ContentValues values = new ContentValues();
                     values.put(InventoryEntry.COLUMN_QUANTITY, quantity);
                     Uri newUri = ContentUris.withAppendedId(InventoryEntry.CONTENT_URI, inventoryItemId);
                     context.getContentResolver().update(newUri, values, null, null);
-                }
-                else {
+                } else {
                     Toast.makeText(context, R.string.no_quantity, Toast.LENGTH_SHORT).show();
                 }
             }

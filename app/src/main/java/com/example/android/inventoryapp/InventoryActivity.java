@@ -1,7 +1,6 @@
 package com.example.android.inventoryapp;
 
 import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,11 +21,10 @@ import android.widget.GridView;
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
 
-public class InventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class InventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int INVENTORY_LOADER = 0;
     InventoryCursorAdapter mInventoryAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +51,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
                 startActivity(addEditIntent);
             }
         });
-
         getSupportLoaderManager().initLoader(INVENTORY_LOADER, null, this);
-
     }
 
     @Override

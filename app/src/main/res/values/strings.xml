@@ -1,42 +1,102 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Inventory App</string>
 
+    <!-- Menu text for the option to add an item [CHAR LIMIT=20] -->
     <string name="add_inventory_item">Add item</string>
+
+    <!-- Menu text for the option to save an item [CHAR LIMIT=20] -->
     <string name="save_inventory_item">Save item</string>
+
+    <!-- Menu text for the option to delete all items [CHAR LIMIT=NONE] -->
     <string name="delete_all">Delete all inventory items</string>
+
+    <!-- Menu text for the option to delete an individual item [CHAR LIMIT=20] -->
     <string name="delete_item">Delete inventory item</string>
+
+    <!-- Activity title text to add an item [CHAR LIMIT=20] -->
     <string name="add_an_item">Add an item</string>
+
+    <!-- Activity title text to edit an item [CHAR LIMIT=20] -->
     <string name="edit_an_item">Edit an item</string>
 
+    <!-- Title text for an empty grid [CHAR LIMIT=20] -->
     <string name="no_inventory">No Inventory</string>
+
+    <!-- Subtitle text for an empty grid [CHAR LIMIT=NONE] -->
     <string name="inventory_prompt">Click the + button to add inventory items!</string>
 
+    <!-- Button text to reduce quantity [CHAR LIMIT=20] -->
     <string name="sale_button">Sale</string>
+
+    <!-- Toast text for when an item quantity reaches 0 [CHAR LIMIT=20] -->
     <string name="no_quantity">No stock left!</string>
 
+    <!-- Button text to add an item picture [CHAR LIMIT=30] -->
     <string name="item_picture">Add Item Picture</string>
+
+    <!-- Text for item name [CHAR LIMIT=20] -->
     <string name="item_name">Item Name</string>
+
+    <!-- Text for item price [CHAR LIMIT=20] -->
     <string name="item_price">Price £</string>
+
+    <!-- Text for item quantity [CHAR LIMIT=20] -->
     <string name="quantity">Quantity</string>
+
+    <!-- Text for total item quantity [CHAR LIMIT=NONE] -->
     <string name="total_quantity">Total Quantity: <xliff:g id="quantityNo" example="2">%d</xliff:g> / 100 </string>
+
+    <!-- Text for item supplier name [CHAR LIMIT=20] -->
     <string name="supplier">Supplier</string>
+
+    <!-- Text for item supplier email [CHAR LIMIT=20] -->
     <string name="supplier_email">Supplier Email</string>
+
+    <!-- Button text to order more of an item [CHAR LIMIT=20] -->
     <string name="order_more">Order More</string>
 
+    <!-- Text for supplier one name [CHAR LIMIT=20] -->
     <string name="supplier_one">Quill London</string>
+
+    <!-- Text for supplier two name [CHAR LIMIT=20] -->
     <string name="supplier_two">Scribblers</string>
+
+    <!-- Text for supplier three name [CHAR LIMIT=20] -->
     <string name="supplier_three">Cult Pens</string>
+
+    <!-- Text for supplier four name [CHAR LIMIT=20] -->
     <string name="supplier_four">Jet Pens</string>
+
+    <!-- Text for unknown supplier [CHAR LIMIT=20] -->
     <string name="supplier_unknown">Unknown</string>
+
+    <!-- Toast text for error deleting an individual item [CHAR LIMIT=NONE] -->
     <string name="delete_item_failed">There was a problem deleting inventory item :( !</string>
+
+    <!-- Toast text for success deleting an individual item [CHAR LIMIT=NONE] -->
     <string name="delete_item_successful">Inventory item was deleted successfully :) !</string>
+
+    <!-- Toast text for error saving an individual item [CHAR LIMIT=NONE] -->
     <string name="error_saving">Error saving inventory item :( !</string>
+
+    <!-- Toast text for success saving an individual item [CHAR LIMIT=NONE] -->
     <string name="success_saving">Inventory item successfully saved :) !</string>
+
+    <!-- Toast text for error updating an individual item [CHAR LIMIT=NONE] -->
     <string name="error_updating">Error updating inventory item :( !</string>
+
+    <!-- Toast text for success updating an individual item [CHAR LIMIT=NONE] -->
     <string name="success_updating">Inventory item successfully updated :) !</string>
+
+    <!-- Toast text for error validating item fields [CHAR LIMIT=NONE] -->
     <string name="save_validation">Please make sure your item has a name, quantity, supplier and supplier email assigned.</string>
+
+    <!-- Email intent subject [CHAR LIMIT=NONE] -->
     <string name="order_to">Order for <xliff.g id="supplier_name" example="Quill London">%s</xliff.g></string>
-    <string name="order_summary">Hello\nI would like to order more of <xliff.g id="inventory_item_name" example="Calligraphy Pens">%s</xliff.g> please!\nThank you!</string>
+
+    <!-- Email intent message [CHAR LIMIT=NONE] -->
+    <string name="order_summary">Hello\nI would like to order more <xliff.g id="inventory_item_name" example="Calligraphy Pens">%s</xliff.g> please!\nThank you!</string>
+
     <!-- Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->
     <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
 

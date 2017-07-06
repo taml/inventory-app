@@ -38,7 +38,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AddEditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class AddEditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int INVENTORY_LOADER = 0;
     private static final int IMG_REQUEST = 88;
@@ -46,7 +46,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
     private ImageView mItemImageView;
     private Button mItemPicButton;
-    private EditText mItemNameEditEditText;
+    private EditText mItemNameEditText;
     private EditText mItemPriceEditText;
     private SeekBar mItemQuantitySeekBar;
     private TextView mTotalQuantityTextView;
@@ -58,7 +58,9 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     private String mCurrentItemSupplierName;
     private int mQuantity = 0;
 
-    /** Content URI for the existing inventory item (null if it's a new item) */
+    /**
+     * Content URI for the existing inventory item (null if it's a new item)
+     */
     private Uri mCurrentInventoryItemUri;
     private Uri mImageUri;
     private String mImageUriString = "";
@@ -79,7 +81,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
         mItemImageView = (ImageView) findViewById(R.id.item_image);
         mItemPicButton = (Button) findViewById(R.id.add_item_picture_button);
-        mItemNameEditEditText = (EditText) findViewById(R.id.item_name_text);
+        mItemNameEditText = (EditText) findViewById(R.id.item_name_text);
         mItemPriceEditText = (EditText) findViewById(R.id.item_price_text);
         mItemQuantitySeekBar = (SeekBar) findViewById(R.id.quantity_seekbar);
         mTotalQuantityTextView = (TextView) findViewById(R.id.total_quantity);
@@ -96,7 +98,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
             invalidateOptionsMenu();
         } else {
             setTitle(getString(R.string.edit_an_item));
-            Log.v("AddEditActivity", "ID: " + mCurrentInventoryItemUri );
+            Log.v("AddEditActivity", "ID: " + mCurrentInventoryItemUri);
         }
 
         setupSpinner();
@@ -120,7 +122,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
             }
         });
 
-        mItemNameEditEditText.setOnTouchListener(mTouchListener);
+        mItemNameEditText.setOnTouchListener(mTouchListener);
         mItemPriceEditText.setOnTouchListener(mTouchListener);
         mItemQuantitySeekBar.setOnTouchListener(mTouchListener);
         mItemSupplierNameSpinner.setOnTouchListener(mTouchListener);
@@ -228,11 +230,11 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     /**
      * Check validity of not null items
      */
-    private boolean validation(){
-        String name = mItemNameEditEditText.getText().toString().trim();
+    private boolean validation() {
+        String name = mItemNameEditText.getText().toString().trim();
         String supplierEmail = mItemSupplierEmailEditText.getText().toString();
         if (name.length() != 0 && mQuantity >= 0 && mQuantity <= 100 && mSupplier >= 0 && mSupplier <= 4
-               && supplierEmail.length() != 0){
+                && supplierEmail.length() != 0) {
             return true;
         } else {
             return false;
@@ -288,7 +290,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     }
 
     private void orderMore() {
-        String item = mItemNameEditEditText.getText().toString().trim();
+        String item = mItemNameEditText.getText().toString().trim();
         Intent orderIntent = new Intent(Intent.ACTION_SENDTO);
         orderIntent.setData(Uri.parse("mailto:")); // only email apps should handle this
         orderIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.order_to, mCurrentItemSupplierName));
@@ -300,7 +302,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
     private void saveInventoryItem() {
 
-        String itemName = mItemNameEditEditText.getText().toString().trim();
+        String itemName = mItemNameEditText.getText().toString().trim();
         String itemPrice = mItemPriceEditText.getText().toString().trim();
         String itemSupplierEmail = mItemSupplierEmailEditText.getText().toString().trim();
 
@@ -378,7 +380,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.save_item:
-                if(validation()) {
+                if (validation()) {
                     saveInventoryItem();
                     finish();
                 } else {
@@ -452,7 +454,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
                 InventoryEntry.COLUMN_PRICE,
                 InventoryEntry.COLUMN_QUANTITY,
                 InventoryEntry.COLUMN_SUPPLIER_NAME,
-                InventoryEntry.COLUMN_SUPPLIER_EMAIL };
+                InventoryEntry.COLUMN_SUPPLIER_EMAIL};
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
@@ -491,9 +493,8 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
             }
             Log.v(LOG_TAG, image);
 
-
             // Update the views on the screen with the values from the database
-            mItemNameEditEditText.setText(name);
+            mItemNameEditText.setText(name);
             mItemPriceEditText.setText(Double.toString(price));
             mItemQuantitySeekBar.setProgress(quantity);
             mTotalQuantityTextView.setText(getString(R.string.total_quantity, quantity));
@@ -516,12 +517,11 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
                     break;
             }
         }
-
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mItemNameEditEditText.setText("");
+        mItemNameEditText.setText("");
         mItemPriceEditText.setText("");
         mTotalQuantityTextView.setText(getString(R.string.total_quantity, mQuantity));
         mItemSupplierEmailEditText.setText("");
