@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Inventory App</string>
 
     <string name="add_inventory_item">Add item</string>
@@ -18,7 +18,7 @@
     <string name="item_name">Item Name</string>
     <string name="item_price">Price £</string>
     <string name="quantity">Quantity</string>
-    <string name="total_quantity">Total Quantity: 0 / 100 </string>
+    <string name="total_quantity">Total Quantity: <xliff:g id="quantityNo" example="2">%d</xliff:g> / 100 </string>
     <string name="supplier">Supplier</string>
     <string name="supplier_email">Supplier Email</string>
     <string name="order_more">Order More</string>
@@ -34,7 +34,9 @@
     <string name="success_saving">Inventory item successfully saved :) !</string>
     <string name="error_updating">Error updating inventory item :( !</string>
     <string name="success_updating">Inventory item successfully updated :) !</string>
-
+    <string name="save_validation">Please make sure your item has a name, quantity, supplier and supplier email assigned.</string>
+    <string name="order_to">Order for <xliff.g id="supplier_name" example="Quill London">%s</xliff.g></string>
+    <string name="order_summary">Hello\nI would like to order more of <xliff.g id="inventory_item_name" example="Calligraphy Pens">%s</xliff.g> please!\nThank you!</string>
     <!-- Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->
     <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
 
@@ -46,6 +48,9 @@
 
     <!-- Dialog message to ask the user to confirm deleting the current pet [CHAR LIMIT=NONE] -->
     <string name="delete_dialog_msg">Delete this inventory item?</string>
+
+    <!-- Dialog message to ask the user to confirm deleting the current pet [CHAR LIMIT=NONE] -->
+    <string name="delete_all_dialog_msg">Delete all inventory items?</string>
 
     <!-- Dialog button text for the option to confirm deleting the current pet [CHAR LIMIT=20] -->
     <string name="delete">Delete</string>

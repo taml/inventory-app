@@ -142,19 +142,13 @@ public class InventoryProvider extends ContentProvider {
             throw new IllegalArgumentException("Inventory item requires a name");
         }
 
-        // If the price is provided, check that it's greater than or equal to 0.00
-        Double price = values.getAsDouble(InventoryEntry.COLUMN_PRICE);
-        if (price != null && price < 0.00) {
-            throw new IllegalArgumentException("Inventory item requires valid price");
-        }
-
-        // If the quantity is provided, check that it's greater than or equal to 0
+        // Check that the quantity is greater than or equal to 0
         Integer quantity = values.getAsInteger(InventoryEntry.COLUMN_QUANTITY);
         if (quantity != null && quantity < 0) {
             throw new IllegalArgumentException("Inventory item requires a valid quantity");
         }
 
-        // Check that the gender is valid
+        // Check that the supplier name is valid
         Integer supplierName = values.getAsInteger(InventoryEntry.COLUMN_SUPPLIER_NAME);
         if (supplierName == null || !InventoryEntry.isValidSupplier(supplierName)) {
             throw new IllegalArgumentException("Inventory item requires a valid supplier name");
@@ -247,16 +241,6 @@ public class InventoryProvider extends ContentProvider {
             String name = values.getAsString(InventoryEntry.COLUMN_NAME);
             if (name == null) {
                 throw new IllegalArgumentException("Inventory item requires a name");
-            }
-        }
-
-        // If the {@link InventoryEntry#COLUMN_PRICE} key is present,
-        // check that the quantity value is valid.
-        if (values.containsKey(InventoryEntry.COLUMN_PRICE)) {
-            // Check that the quantity is greater than or equal to 0
-            Double price = values.getAsDouble(InventoryEntry.COLUMN_PRICE);
-            if (price != null && price < 0.00) {
-                throw new IllegalArgumentException("Item requires a valid price");
             }
         }
 

@@ -2,12 +2,14 @@ package com.example.android.inventoryapp;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -56,23 +58,6 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
 
     }
 
-    private void insertInventoryItem(){
-        // Create a ContentValues object where column names are the keys,
-        // and calligraphy nib attributes are the item values.
-        ContentValues values = new ContentValues();
-        values.put(InventoryEntry.COLUMN_NAME, "Calligraphy Nib");
-        values.put(InventoryEntry.COLUMN_PRICE, 0.89);
-        values.put(InventoryEntry.COLUMN_QUANTITY, 5);
-        values.put(InventoryEntry.COLUMN_SUPPLIER_NAME, InventoryEntry.SUPPLIER_SCRIBBLERS);
-        values.put(InventoryEntry.COLUMN_SUPPLIER_EMAIL, "scribblers@example.com");
-
-        // Insert a new row for calligraphy nibs into the provider using the ContentResolver.
-        // Use the {@link InventoryEntry#CONTENT_URI} to indicate that we want to insert
-        // into the inventory database table.
-        // Receive the new content URI that will allow us to access the calligraphy nibs data in the future.
-        Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_catalog.xml file.
@@ -87,13 +72,12 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
         switch (item.getItemId()) {
             // Respond to a click on the "Add" menu option
             case R.id.add_item:
-//                insertInventoryItem();
                 Intent addItemIntent = new Intent(InventoryActivity.this, AddEditActivity.class);
                 startActivity(addItemIntent);
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.delete_all_items:
-                deleteAllInventoryItems();
+                showDeleteConfirmationDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -115,6 +99,32 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mInventoryAdapter.swapCursor(null);
+    }
+
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the postivie and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_all_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the inventory item.
+                deleteAllInventoryItems();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the inventory item.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void deleteAllInventoryItems() {
