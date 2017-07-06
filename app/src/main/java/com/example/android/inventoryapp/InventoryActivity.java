@@ -33,6 +33,9 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
 
         // Find GridView to populate
         GridView gridViewItems = (GridView) findViewById(R.id.inventory_grid_view);
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyGrid = findViewById(R.id.empty_grid);
+        gridViewItems.setEmptyView(emptyGrid);
         // Setup cursor adapter using cursor from last step
         mInventoryAdapter = new InventoryCursorAdapter(this, null);
         // Attach cursor adapter to the ListView

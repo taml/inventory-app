@@ -17,4 +17,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <RelativeLayout
+        android:id="@+id/empty_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/imageBackground">
+
+        <ImageView
+            android:id="@+id/empty_store_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/medium"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/store"/>
+
+        <TextView
+            style="@style/TextStyle"
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/empty_store_image"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="@dimen/small"
+            android:text="@string/no_inventory" />
+
+        <TextView
+            style="@style/TextStyle"
+            android:id="@+id/subtitle_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_text"
+            android:gravity="center"
+            android:paddingTop="@dimen/xsmall"
+            android:paddingLeft="@dimen/medium"
+            android:paddingRight="@dimen/medium"
+            android:paddingBottom="@dimen/medium"
+            android:text="@string/inventory_prompt" />
+    </RelativeLayout>
+
 </RelativeLayout>

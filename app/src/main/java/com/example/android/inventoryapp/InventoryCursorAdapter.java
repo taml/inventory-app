@@ -77,15 +77,13 @@ public class InventoryCursorAdapter extends CursorAdapter{
             @Override
             public void onClick(View v) {
                 if (inventoryItemQuantity > 0) {
-                    saleButton.setEnabled(true);
                    int quantity = inventoryItemQuantity - 1;
                     ContentValues values = new ContentValues();
                     values.put(InventoryEntry.COLUMN_QUANTITY, quantity);
                     Uri newUri = ContentUris.withAppendedId(InventoryEntry.CONTENT_URI, inventoryItemId);
                     context.getContentResolver().update(newUri, values, null, null);
                 }
-                if (inventoryItemQuantity == 1){
-                    saleButton.setEnabled(false);
+                else {
                     Toast.makeText(context, R.string.no_quantity, Toast.LENGTH_SHORT).show();
                 }
             }

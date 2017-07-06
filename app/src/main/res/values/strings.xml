@@ -8,6 +8,9 @@
     <string name="add_an_item">Add an item</string>
     <string name="edit_an_item">Edit an item</string>
 
+    <string name="no_inventory">No Inventory</string>
+    <string name="inventory_prompt">Click the + button to add inventory items!</string>
+
     <string name="sale_button">Sale</string>
     <string name="no_quantity">No stock left!</string>
 
@@ -31,4 +34,22 @@
     <string name="success_saving">Inventory item successfully saved :) !</string>
     <string name="error_updating">Error updating inventory item :( !</string>
     <string name="success_updating">Inventory item successfully updated :) !</string>
+
+    <!-- Dialog message when user is leaving editor but hasn't saved changes [CHAR LIMIT=NONE] -->
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+
+    <!-- Dialog button text for the option to discard a user's changes [CHAR LIMIT=20] -->
+    <string name="discard">Discard</string>
+
+    <!-- Dialog button text for the option to keep editing the current pet [CHAR LIMIT=20] -->
+    <string name="keep_editing">Keep Editing</string>
+
+    <!-- Dialog message to ask the user to confirm deleting the current pet [CHAR LIMIT=NONE] -->
+    <string name="delete_dialog_msg">Delete this inventory item?</string>
+
+    <!-- Dialog button text for the option to confirm deleting the current pet [CHAR LIMIT=20] -->
+    <string name="delete">Delete</string>
+
+    <!-- Dialog button text for the option to cancel deletion of the current pet [CHAR LIMIT=20] -->
+    <string name="cancel">Cancel</string>
 </resources>
