@@ -548,7 +548,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
             String supplierEmail = cursor.getString(supplierEmailColumnIndex);
             if (image != null) {
                 Uri imgUri = Uri.parse(image);
-                mItemImageView.setImageBitmap(getBitmapFromUri(imgUri));
+                mItemImageView.setImageURI(imgUri);
             }
             Log.v(LOG_TAG, image);
 
