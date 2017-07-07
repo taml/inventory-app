@@ -1,16 +1,21 @@
 package com.example.android.inventoryapp;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
@@ -42,6 +47,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
     private static final int INVENTORY_LOADER = 0;
     private static final int IMG_REQUEST = 88;
+    private static final int PERMISSION_REQ = 11;
     private static final String LOG_TAG = "AddEditActivity";
 
     private ImageView mItemImageView;
@@ -64,6 +70,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     private Uri mCurrentInventoryItemUri;
     private Uri mImageUri;
     private String mImageUriString = "";
+    private boolean mImagePermission;
 
     private boolean mInventoryItemHasChanged = false;
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
@@ -78,6 +85,12 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit);
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQ);
+            }
+        }
 
         mItemImageView = (ImageView) findViewById(R.id.item_image);
         mItemPicButton = (Button) findViewById(R.id.add_item_picture_button);
@@ -148,8 +161,6 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
         if (Build.VERSION.SDK_INT < 19) {
             intent = new Intent(Intent.ACTION_GET_CONTENT);
-        } else if (){
-
         } else {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -176,6 +187,25 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
                 mImageUriString = mImageUri.toString();
                 Log.v(LOG_TAG, "Uri: " + mImageUriString);
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+
+        switch (requestCode) {
+            case PERMISSION_REQ:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mImagePermission = true;
+                    Log.v(LOG_TAG, "Request : " + mImagePermission);
+
+                } else {
+                    mImagePermission = false;
+                    Log.v(LOG_TAG, "Request : " + mImagePermission);
+                    Toast.makeText(AddEditActivity.this, "App requires storage permission, please review your permissions", Toast.LENGTH_LONG).show();
+                }
+                return;
         }
     }
 
