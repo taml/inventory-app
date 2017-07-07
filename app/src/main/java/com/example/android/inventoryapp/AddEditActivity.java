@@ -32,7 +32,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,7 +53,9 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     private Button mItemPicButton;
     private EditText mItemNameEditText;
     private EditText mItemPriceEditText;
-    private SeekBar mItemQuantitySeekBar;
+    private Button mDecreaseButton;
+    private EditText mItemQuantityEditText;
+    private Button mIncreaseButton;
     private TextView mTotalQuantityTextView;
     private Spinner mItemSupplierNameSpinner;
     private EditText mItemSupplierEmailEditText;
@@ -96,13 +97,17 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
         mItemPicButton = (Button) findViewById(R.id.add_item_picture_button);
         mItemNameEditText = (EditText) findViewById(R.id.item_name_text);
         mItemPriceEditText = (EditText) findViewById(R.id.item_price_text);
-        mItemQuantitySeekBar = (SeekBar) findViewById(R.id.quantity_seekbar);
+        mDecreaseButton = (Button) findViewById(R.id.decrease_quantity);
+        mItemQuantityEditText = (EditText) findViewById(R.id.quantity_edit_text);
+        mIncreaseButton = (Button) findViewById(R.id.increase_quantity);
         mTotalQuantityTextView = (TextView) findViewById(R.id.total_quantity);
         mItemSupplierNameSpinner = (Spinner) findViewById(R.id.supplier_spinner);
         mItemSupplierEmailEditText = (EditText) findViewById(R.id.supplier_email_text);
         mOrderMoreButton = (Button) findViewById(R.id.order_more_button);
 
         mTotalQuantityTextView.setText(getString(R.string.total_quantity, mQuantity));
+        String quant = String.valueOf(mQuantity);
+        mItemQuantityEditText.setText(quant);
         Intent inventoryIntent = getIntent();
         mCurrentInventoryItemUri = inventoryIntent.getData();
 
@@ -117,27 +122,9 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
         setupSpinner();
         getSupportLoaderManager().initLoader(INVENTORY_LOADER, null, this);
 
-        mItemQuantitySeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mQuantity = progress;
-                mTotalQuantityTextView.setText(getString(R.string.total_quantity, mQuantity));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                Log.v("AddEditActivity", "Quantity: " + mQuantity);
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                Log.v("AddEditActivity", mQuantity + " will be added when item is saved");
-            }
-        });
-
         mItemNameEditText.setOnTouchListener(mTouchListener);
         mItemPriceEditText.setOnTouchListener(mTouchListener);
-        mItemQuantitySeekBar.setOnTouchListener(mTouchListener);
+        mItemQuantityEditText.setOnTouchListener(mTouchListener);
         mItemSupplierNameSpinner.setOnTouchListener(mTouchListener);
         mItemSupplierEmailEditText.setOnTouchListener(mTouchListener);
 
@@ -154,6 +141,46 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
                 orderMore();
             }
         });
+
+        mDecreaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decreaseButton();
+            }
+        });
+
+        mIncreaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                increaseButton();
+            }
+        });
+    }
+
+    private void decreaseButton(){
+        String currentQuantity = mItemQuantityEditText.getText().toString().trim();
+        mQuantity = Integer.parseInt(currentQuantity);
+        if(mQuantity > 0) {
+            mQuantity--;
+            mTotalQuantityTextView.setText(getString(R.string.total_quantity, mQuantity));
+            String quant = String.valueOf(mQuantity);
+            mItemQuantityEditText.setText(quant);
+        } else {
+            Toast.makeText(AddEditActivity.this, getString(R.string.decrease_toast), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void increaseButton(){
+        String currentQuantity = mItemQuantityEditText.getText().toString().trim();
+        mQuantity = Integer.parseInt(currentQuantity);
+        if(mQuantity < 100) {
+            mQuantity++;
+            mTotalQuantityTextView.setText(getString(R.string.total_quantity, mQuantity));
+            String quant = String.valueOf(mQuantity);
+            mItemQuantityEditText.setText(quant);
+        } else {
+            Toast.makeText(AddEditActivity.this, getString(R.string.increase_toast), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void getImage() {
@@ -528,7 +555,8 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
             // Update the views on the screen with the values from the database
             mItemNameEditText.setText(name);
             mItemPriceEditText.setText(Double.toString(price));
-            mItemQuantitySeekBar.setProgress(quantity);
+            String quant = String.valueOf(quantity);
+            mItemQuantityEditText.setText(quant);
             mTotalQuantityTextView.setText(getString(R.string.total_quantity, quantity));
             mItemSupplierEmailEditText.setText(supplierEmail);
             switch (supplierName) {
@@ -555,6 +583,8 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     public void onLoaderReset(Loader<Cursor> loader) {
         mItemNameEditText.setText("");
         mItemPriceEditText.setText("");
+        String quant = String.valueOf(mQuantity);
+        mItemQuantityEditText.setText(quant);
         mTotalQuantityTextView.setText(getString(R.string.total_quantity, mQuantity));
         mItemSupplierEmailEditText.setText("");
         mItemSupplierNameSpinner.setSelection(4);

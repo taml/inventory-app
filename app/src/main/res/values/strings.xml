@@ -49,6 +49,12 @@
     <!-- Button text for increasing quantity [CHAR LIMIT=20] -->
     <string name="increase">+</string>
 
+    <!-- Toast text for decreasing quantity [CHAR LIMIT=NONE] -->
+    <string name="decrease_toast">Quantity must be 0 or more.</string>
+
+    <!-- Toast text for increasing quantity [CHAR LIMIT=NONE] -->
+    <string name="increase_toast">Quantity must be 100 or less.</string>
+
     <!-- Text for total item quantity [CHAR LIMIT=NONE] -->
     <string name="total_quantity">Total Quantity: <xliff:g id="quantityNo" example="2">%d</xliff:g> / 100 </string>
 
