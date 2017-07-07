@@ -210,8 +210,8 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
             if (resultData != null) {
                 mImageUri = resultData.getData();
-                mItemImageView.setImageBitmap(getBitmapFromUri(mImageUri));
                 mImageUriString = mImageUri.toString();
+                mItemImageView.setImageBitmap(getBitmapFromUri(mImageUri));
                 Log.v(LOG_TAG, "Uri: " + mImageUriString);
             }
         }
@@ -292,12 +292,29 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     private boolean validation() {
         String name = mItemNameEditText.getText().toString().trim();
         String supplierEmail = mItemSupplierEmailEditText.getText().toString();
-        if (mImageUri != null && name.length() != 0 && mQuantity >= 0 && mQuantity <= 100 && mSupplier >= 0 && mSupplier <= 4
-                && supplierEmail.length() != 0) {
-            return true;
-        } else {
-            return false;
+        Boolean existingImage = null;
+        // If new item require image
+        if (mCurrentInventoryItemUri == null) {
+            if (mImageUri != null && name.length() != 0 && mQuantity >= 0 && mQuantity <= 100 && mSupplier >= 0 && mSupplier <= 4
+                    && supplierEmail.length() != 0) {
+                existingImage = true;
+            } else {
+                existingImage = false;
+            }
         }
+
+        // If existing item uploading a new image is optional as one already exists and the user might not want to change it
+        if (mCurrentInventoryItemUri != null) {
+            if (name.length() != 0 && mQuantity >= 0 && mQuantity <= 100 && mSupplier >= 0 && mSupplier <= 4
+                    && supplierEmail.length() != 0) {
+                existingImage = true;
+            } else {
+                existingImage = false;
+            }
+        }
+
+            return existingImage;
+        
     }
 
     /**
@@ -549,6 +566,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
             if (image != null) {
                 Uri imgUri = Uri.parse(image);
                 mItemImageView.setImageURI(imgUri);
+                mImageUriString = image;
             }
             Log.v(LOG_TAG, image);
 
