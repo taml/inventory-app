@@ -43,6 +43,12 @@
     <!-- Text for item quantity [CHAR LIMIT=20] -->
     <string name="quantity">Quantity</string>
 
+    <!-- Button text for decreasing quantity [CHAR LIMIT=20] -->
+    <string name="decrease">-</string>
+
+    <!-- Button text for increasing quantity [CHAR LIMIT=20] -->
+    <string name="increase">+</string>
+
     <!-- Text for total item quantity [CHAR LIMIT=NONE] -->
     <string name="total_quantity">Total Quantity: <xliff:g id="quantityNo" example="2">%d</xliff:g> / 100 </string>
 
@@ -89,7 +95,7 @@
     <string name="success_updating">Inventory item successfully updated :) !</string>
 
     <!-- Toast text for error validating item fields [CHAR LIMIT=NONE] -->
-    <string name="save_validation">Please make sure your item has a name, quantity, supplier and supplier email assigned.</string>
+    <string name="save_validation">Please make sure your item has an image, a name, quantity, supplier and supplier email assigned.</string>
 
     <!-- Email intent subject [CHAR LIMIT=NONE] -->
     <string name="order_to">Order for <xliff.g id="supplier_name" example="Quill London">%s</xliff.g></string>

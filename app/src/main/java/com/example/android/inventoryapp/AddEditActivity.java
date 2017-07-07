@@ -148,6 +148,8 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
 
         if (Build.VERSION.SDK_INT < 19) {
             intent = new Intent(Intent.ACTION_GET_CONTENT);
+        } else if (){
+
         } else {
             intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -233,7 +235,7 @@ public class AddEditActivity extends AppCompatActivity implements LoaderManager.
     private boolean validation() {
         String name = mItemNameEditText.getText().toString().trim();
         String supplierEmail = mItemSupplierEmailEditText.getText().toString();
-        if (name.length() != 0 && mQuantity >= 0 && mQuantity <= 100 && mSupplier >= 0 && mSupplier <= 4
+        if (mImageUri != null && name.length() != 0 && mQuantity >= 0 && mQuantity <= 100 && mSupplier >= 0 && mSupplier <= 4
                 && supplierEmail.length() != 0) {
             return true;
         } else {
